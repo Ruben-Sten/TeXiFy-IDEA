@@ -15,8 +15,6 @@ import nl.hannahsten.texifyidea.lang.commands.RequiredArgument
 import nl.hannahsten.texifyidea.lang.commands.RequiredFileArgument
 import nl.hannahsten.texifyidea.reference.CommandDefinitionReference
 import nl.hannahsten.texifyidea.reference.InputFileReference
-import nl.hannahsten.texifyidea.reference.LatexLabelReference
-import nl.hannahsten.texifyidea.util.getLabelReferenceCommands
 import nl.hannahsten.texifyidea.util.magic.CommandMagic
 import nl.hannahsten.texifyidea.util.magic.PatternMagic
 import nl.hannahsten.texifyidea.util.requiredParameters
@@ -26,16 +24,9 @@ import java.util.regex.Pattern
 
 /**
  * Get the references for this command.
- * For example for a \ref{label1,label2} command, then label1 and label2 are the references.
  */
 fun getReferences(element: LatexCommands): Array<PsiReference> {
     val firstParam = readFirstParam(element)
-
-    // If it is a reference to a label
-    if (element.project.getLabelReferenceCommands().contains(element.commandToken.text) && firstParam != null) {
-        val references = extractLabelReferences(element, firstParam)
-        return references.toTypedArray()
-    }
 
     // If it is a reference to a file
     val references: List<PsiReference> = element.getFileArgumentsReferences()
@@ -100,22 +91,6 @@ private fun LatexCommands.getFileArgumentsReferences(): List<InputFileReference>
     }
 
     return inputFileReferences
-}
-
-/**
- * Create label references from the command parameter given.
- */
-fun extractLabelReferences(element: LatexCommands, firstParam: LatexRequiredParam): List<PsiReference> {
-    val subParamRanges = extractSubParameterRanges(firstParam)
-    val references: MutableList<PsiReference> = ArrayList()
-    for (range in subParamRanges) {
-        references.add(
-            LatexLabelReference(
-                element, range.shiftRight(firstParam.textOffset - element.textOffset)
-            )
-        )
-    }
-    return references
 }
 
 fun readFirstParam(element: LatexCommands): LatexRequiredParam? {
