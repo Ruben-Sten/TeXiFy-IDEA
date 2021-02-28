@@ -123,11 +123,19 @@ tasks.processResources {
     }
 }
 
+// https://plugins.jetbrains.com/docs/intellij/dynamic-plugins.html#diagnosing-leaks
+tasks.runIde {
+    jvmArgs = mutableListOf("-XX:+UnlockDiagnosticVMOptions")
+
+    // Set to true to generate hprof files on unload fails
+    systemProperty("ide.plugins.snapshot.on.unload.fail", "false")
+}
+
 intellij {
     pluginName = "TeXiFy-IDEA"
 
     // indices plugin doesn't work in tests
-    setPlugins("tanvd.grazi", "java", "com.firsttimeinforever.intellij.pdf.viewer.intellij-pdf-viewer:0.10.1") // , "com.jetbrains.hackathon.indices.viewer:1.12")
+    setPlugins("tanvd.grazi", "java") // , "com.firsttimeinforever.intellij.pdf.viewer.intellij-pdf-viewer:0.10.0") // , "com.jetbrains.hackathon.indices.viewer:1.12")
 
     // Use the since build number from plugin.xml
     updateSinceUntilBuild = false
@@ -137,7 +145,7 @@ intellij {
     // Comment out to use the latest EAP snapshot
     // Docs: https://github.com/JetBrains/gradle-intellij-plugin#intellij-platform-properties
     // All snapshot versions: https://www.jetbrains.com/intellij-repository/snapshots/
-    version = "2020.3.1"
+    version = "211.5787.15-EAP-SNAPSHOT"
 //    version = "PY-203.5419.8-EAP-SNAPSHOT"
 //    type = "PY"
 
