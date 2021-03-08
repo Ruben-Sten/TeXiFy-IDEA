@@ -11,6 +11,7 @@ class LoadUnloadListener : DynamicPluginListener {
 //        ControlTracker.unload()
 //        ShiftTracker.unload()
 //        runBlocking { EvinceInverseSearchListener.unload() }
+        ForwardSearchActionRegistration().unload()
         super.beforePluginUnload(pluginDescriptor, isUpdate)
     }
 }
